@@ -1,0 +1,10 @@
+desc: This is simply a platform for digital ocean.  
+release: 0.0.1
+categories:
+   - platform
+tags:
+   - infrastructure
+   - platform
+   - public_cloud
+   - aws
+   - digital_ocean
