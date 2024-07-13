@@ -23,7 +23,7 @@ def run(stackargs):
     aws_settings = {
         "name":"aws_settings",
         "values": {
-            "aws_default_region": eu-west-1
+            "aws_default_region": aws_default_region
         }
     }
 
