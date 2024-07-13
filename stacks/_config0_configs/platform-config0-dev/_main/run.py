@@ -33,8 +33,8 @@ def run(stackargs):
     }
 
     # network related
-    vars_set_labels_hash = {
-        "name":"vars_set_labels_hash",
+    network_vars_set_labels_hash = {
+        "name":"network_vars_set_labels_hash",
         "values": {
             "labels_hash": stack.b64_encode({
                 **general_labels,
@@ -104,7 +104,7 @@ def run(stackargs):
         }
     }
 
-    # vpc/vars_set for vpc setting
+    # vpc/network_vars_set for vpc setting
     stack.add_substack('config0-publish:::aws_vpc_simple',
                        arguments=[cloud_tags],
                        labels=[
@@ -113,10 +113,10 @@ def run(stackargs):
                        ])
 
     # related to mostly vpc
-    stack.add_substack('config0-publish:::vars_set',
+    stack.add_substack('config0-publish:::network_vars_set',
                        arguments=[
                            cloud_tags,
-                           vars_set_labels_hash
+                           network_vars_set_labels_hash
                        ],
                        labels=[
                            general,
