@@ -20,6 +20,13 @@ def run(stackargs):
         "purpose": "config0-intro"
     }
 
+    aws_settings = {
+        "name":"aws_settings",
+        "values": {
+            "aws_default_region": eu-west-1
+        }
+    }
+
     # cloud_tags arguments are passed
     # as b64 string as cloud_tags_hash
     cloud_tags = {
@@ -106,7 +113,10 @@ def run(stackargs):
 
     # vpc/network_vars_set for vpc setting
     stack.add_substack('config0-publish:::aws_vpc_simple',
-                       arguments=[cloud_tags],
+                       arguments=[
+                           cloud_tags,
+                           aws_settings
+                       ],
                        labels=[
                            general,
                            aws_cloud
@@ -128,7 +138,10 @@ def run(stackargs):
 
 
     stack.add_substack('config0-publish:::aws_nat_inst_vpc',  # nat instance (instead of nat gw)
-                       arguments=[cloud_tags],
+                       arguments=[
+                           cloud_tags,
+                           aws_settings
+                       ],
                        labels=[
                            general,
                            aws_cloud
@@ -140,7 +153,10 @@ def run(stackargs):
 
     # aws stateful stacks
     stack.add_substack('config0-publish:::aws_rds',
-                       arguments=[cloud_tags],
+                       arguments=[
+                           cloud_tags,
+                           aws_settings
+                       ],
                        labels=[
                            general,
                            aws_cloud
@@ -152,7 +168,10 @@ def run(stackargs):
 
     # aws kubernetes
     stack.add_substack('config0-publish:::aws_eks',
-                       arguments=[cloud_tags],
+                       arguments=[
+                           cloud_tags,
+                           aws_settings
+                       ],
                        labels=[
                            general,
                            aws_cloud
