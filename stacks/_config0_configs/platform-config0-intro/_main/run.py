@@ -1,8 +1,7 @@
 def run(stackargs):
 
     '''
-    this is platform versioning example 
-    for the starting out guide
+    this is platform example 
     '''
 
     # instantiate authoring stack
@@ -190,3 +189,4 @@ def run(stackargs):
     stack.init_substacks()
 
     return stack.get_results()
+

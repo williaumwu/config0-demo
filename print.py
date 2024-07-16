@@ -8,9 +8,9 @@ import pyautogui
 import time
 
 spaces = 0
-delay_speed = 0.1 #Bigger number slower typing
+delay_speed = 0 #Bigger number slower typing
 file_path = "/home/gary.leong/Dropbox/ElasticDev/Accounts/williamwu/config0-demo/stacks/_config0_configs/platform-config0-intro/_main/run.py"
-
+file_path = "config0.yml"
 def tabbing_mech(line): #Needed for IDEs
     global spaces
     count_space = 0
