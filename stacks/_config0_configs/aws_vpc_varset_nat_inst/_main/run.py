@@ -14,6 +14,15 @@ class Main(newSchedStack):
                                 default="eu-west-1",
                                 types="str")
 
+        # variable set
+        self.parse.add_optional(key="vars_set_labels_hash",
+                                default='null',
+                                types="str")
+
+        self.parse.add_optional(key="vars_set_arguments_hash",
+                                default='null',
+                                types="str")
+
         # nat instance vars
         self.parse.add_optional(key="nat_instance_types",
                                 types="str",
@@ -22,14 +31,6 @@ class Main(newSchedStack):
         self.parse.add_optional(key="nat_cidr_ingress_accept",
                                 types="str",
                                 default="0.0.0.0/0")
-
-        self.parse.add_optional(key="vars_set_labels_hash",
-                                default='null',
-                                types="str")
-
-        self.parse.add_optional(key="vars_set_arguments_hash",
-                                default='null',
-                                types="str")
 
         self.parse.add_optional(key="vpc_id",
                                 default="null",
@@ -103,7 +104,10 @@ class Main(newSchedStack):
         self.stack.init_variables()
         self.stack.verify_variables()
 
-        arguments = {}
+        arguments = {
+            "evaluate": False,
+            "vars_set_name": self._get_vars_set()
+        }
 
         if self.stack.vars_set_arguments_hash:
             arguments["arguments_hash"] = self.stack.vars_set_arguments_hash
