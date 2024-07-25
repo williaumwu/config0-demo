@@ -24,14 +24,6 @@ class Main(newSchedStack):
                                 types="str")
 
         # nat instance vars
-        self.parse.add_optional(key="nat_instance_types",
-                                types="str",
-                                default="t3.nano,t3a.nano")
-
-        self.parse.add_optional(key="nat_cidr_ingress_accept",
-                                types="str",
-                                default="0.0.0.0/0")
-
         self.parse.add_optional(key="vpc_id",
                                 default="null",
                                 types="str")
@@ -44,10 +36,43 @@ class Main(newSchedStack):
                                 default="null",
                                 types="str")
 
+        # sensible defaults
+        self.parse.add_optional(key="nat_instance_types",
+                                types="str",
+                                default="t3.nano,t3a.nano")
+
+        self.parse.add_optional(key="nat_cidr_ingress_accept",
+                                types="str",
+                                default="0.0.0.0/0")
+
+        ###############################################################
+        # eks settings
+        ###############################################################
+        self.parse.add_optional(key="eks_cluster_version",
+                                types="str",
+                                default="1.29")
+
+        self.parse.add_optional(key="eks_cluster_subnet_ids",
+                                types="str")
+
+        self.parse.add_optional(key="eks_cluster_sg_id",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_group_subnet_ids",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_role_arn",
+                                types="str")
+
+
         # add substack
         self.stack.add_substack("config0-publish:::aws_vpc_simple")
         self.stack.add_substack("config0-publish:::network_vars_set")
         self.stack.add_substack("config0-publish:::aws_nat_inst_vpc")
+        ###############################################################
+        # eks settings
+        ###############################################################
+        self.stack.add_substack("config0-publish:::aws_eks")
 
         self.stack.init_substacks()
 
@@ -158,12 +183,63 @@ class Main(newSchedStack):
         return self.stack.aws_nat_inst_vpc.insert(display=True,
                                                   **inputargs)
 
+    ###############################################################
+    # eks settings
+    ###############################################################
+    def run_eks(self):
+
+        self.stack.init_variables()
+        self.stack.verify_variables()
+
+        arguments = {
+            "publish_to_saas": True,
+            "eks_node_capacity_type": "ON_DEMAND",
+            "eks_node_ami_type": "AL2_x86_64",
+            "eks_node_max_capacity": 1
+            "eks_node_min_capacity": 1
+            "eks_node_desired_capacity": 1
+            "eks_node_disksize": 25
+            "eks_node_instance_types":["t3.medium","t3.large"],
+            "vpc_name": self._get_vpc_name(),
+            "eks_cluster": self._get_eks_name(),
+            "cloud_tags_hash": self._set_cloud_tag_hash(),
+            "aws_default_region": self.stack.aws_default_region,
+            "vpc_id":self.stack.vpc_id,
+        }
+
+        add = {
+            "eks_cluster_version":self.stack.eks_cluster_version,
+            "eks_cluster_subnet_ids":self.stack.eks_cluster_subnet_ids,
+            "eks_cluster_sg_id":self.stack.eks_cluster_sg_id,
+            "eks_node_group_subnet_ids":self.stack.eks_node_group_subnet_ids,
+            "eks_node_role_arn"self.stack.eks_node_role_arn
+        }
+
+        arguments.update{add}
+
+        human_description = f'Create eks"'
+
+        inputargs = {
+            "arguments": arguments,
+            "automation_phase": "infrastructure",
+            "human_description": human_description
+        }
+
+        return self.stack.aws_eks.insert(display=True,
+                                         **inputargs)
+
+
     def run(self):
 
         self.stack.unset_parallel()
         self.add_job("vpc")
         self.add_job("network_vars_set")
         self.add_job("nat_instance")
+
+        ###############################################################
+        # eks settings
+        ###############################################################
+        self.add_job("eks")
 
         return self.finalize_jobs()
 
@@ -185,7 +261,10 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
-        sched.on_success = ["nat_instance"]
+        sched.on_success = ["nat_instance","aws_eks"],]
+
+        #sched.on_success = ["nat_instance"]
+
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -194,6 +273,17 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = 'Create nat instance'
+        self.add_schedule()
+
+        ###############################################################
+        # eks settings
+        ###############################################################
+        sched = self.new_schedule()
+        sched.job = "aws_eks"
+        sched.archive.timeout = 2700
+        sched.archive.timewait = 300
+        sched.automation_phase = "infrastructure"
+        sched.human_description = 'Create Eks cluster'
         self.add_schedule()
 
         return self.get_schedules()
