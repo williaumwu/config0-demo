@@ -132,6 +132,8 @@ class Main(newSchedStack):
         self.stack.verify_variables()
 
         for req_key in ["vpc_id","public_subnet_ids","private_route_table_id"]:
+            if self.stack.get_attr(req_key):
+                continue
             raise Exception(f'nat instance requires argument "{req_key}"')
 
         arguments = {
