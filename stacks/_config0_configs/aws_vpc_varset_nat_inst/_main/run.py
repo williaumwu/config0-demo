@@ -139,7 +139,7 @@ class Main(newSchedStack):
         arguments = {
             "cloud_tags_hash": self._set_cloud_tag_hash(),
             "service_name": self.stack.env_name,
-            "cidr_ingress_accept": self.nat_cidr_ingress_accept,
+            "cidr_ingress_accept": self.stack.nat_cidr_ingress_accept,
             "instance_types": self.stack.nat_instance_types,
             "public_subnet_ids": self.stack.public_subnet_ids,
             "private_route_table_id": self.stack.private_route_table_id,
