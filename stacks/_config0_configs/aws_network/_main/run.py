@@ -195,10 +195,10 @@ class Main(newSchedStack):
             "publish_to_saas": True,
             "eks_node_capacity_type": "ON_DEMAND",
             "eks_node_ami_type": "AL2_x86_64",
-            "eks_node_max_capacity": 1
-            "eks_node_min_capacity": 1
-            "eks_node_desired_capacity": 1
-            "eks_node_disksize": 25
+            "eks_node_max_capacity": 1,
+            "eks_node_min_capacity": 1,
+            "eks_node_desired_capacity": 1,
+            "eks_node_disksize": 25,
             "eks_node_instance_types":["t3.medium","t3.large"],
             "vpc_name": self._get_vpc_name(),
             "eks_cluster": self._get_eks_name(),
@@ -207,15 +207,15 @@ class Main(newSchedStack):
             "vpc_id":self.stack.vpc_id,
         }
 
-        add = {
+        add_args = {
             "eks_cluster_version":self.stack.eks_cluster_version,
             "eks_cluster_subnet_ids":self.stack.eks_cluster_subnet_ids,
             "eks_cluster_sg_id":self.stack.eks_cluster_sg_id,
             "eks_node_group_subnet_ids":self.stack.eks_node_group_subnet_ids,
-            "eks_node_role_arn"self.stack.eks_node_role_arn
+            "eks_node_role_arn":self.stack.eks_node_role_arn
         }
 
-        arguments.update{add}
+        arguments.update(add_args)
 
         human_description = f'Create eks"'
 
@@ -261,7 +261,7 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
-        sched.on_success = ["nat_instance","aws_eks"],]
+        sched.on_success = ["nat_instance","aws_eks"]
 
         #sched.on_success = ["nat_instance"]
 
