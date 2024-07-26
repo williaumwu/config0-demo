@@ -24,14 +24,6 @@ class Main(newSchedStack):
                                 types="str")
 
         # nat instance vars
-        self.parse.add_optional(key="nat_instance_types",
-                                types="str",
-                                default="t3.nano,t3a.nano")
-
-        self.parse.add_optional(key="nat_cidr_ingress_accept",
-                                types="str",
-                                default="0.0.0.0/0")
-
         self.parse.add_optional(key="vpc_id",
                                 default="null",
                                 types="str")
@@ -41,6 +33,38 @@ class Main(newSchedStack):
                                 types="str")
 
         self.parse.add_optional(key="private_route_table_id",
+                                default="null",
+                                types="str")
+
+        # sensible defaults
+        self.parse.add_optional(key="nat_instance_types",
+                                types="str",
+                                default="t3.nano,t3a.nano")
+
+        self.parse.add_optional(key="nat_cidr_ingress_accept",
+                                types="str",
+                                default="0.0.0.0/0")
+
+        ###############################################################
+        # eks settings
+        ###############################################################
+        self.parse.add_optional(key="eks_cluster_version",
+                                types="str",
+                                default="1.29")
+
+        self.parse.add_optional(key="eks_cluster_subnet_ids",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_cluster_sg_id",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_group_subnet_ids",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_role_arn",
                                 default="null",
                                 types="str")
 
