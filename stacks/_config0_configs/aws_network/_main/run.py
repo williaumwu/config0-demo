@@ -14,6 +14,11 @@ class Main(newSchedStack):
                                 default="eu-west-1",
                                 types="str")
 
+        # vpc 
+        self.parse.add_optional(key="eks_cluster",
+                                default="null",
+                                types="str")
+
         # variable set
         self.parse.add_optional(key="vars_set_labels_hash",
                                 default='null',
@@ -45,44 +50,17 @@ class Main(newSchedStack):
                                 types="str",
                                 default="0.0.0.0/0")
 
-        ###############################################################
-        # eks settings
-        ###############################################################
-        self.parse.add_optional(key="eks_cluster_version",
-                                types="str",
-                                default="1.29")
-
-        self.parse.add_optional(key="eks_cluster_subnet_ids",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_cluster_sg_id",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_group_subnet_ids",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_role_arn",
-                                default="null",
-                                types="str")
-
         # add substack
         self.stack.add_substack("config0-publish:::aws_vpc_simple")
         self.stack.add_substack("config0-publish:::network_vars_set")
         self.stack.add_substack("config0-publish:::aws_nat_inst_vpc")
-        ###############################################################
-        # eks settings
-        ###############################################################
-        self.stack.add_substack("config0-publish:::aws_eks")
 
         self.stack.init_substacks()
 
     def _get_vpc_name(self):
         return f'{self.stack.env_name}-vpc'
 
-    def _get_eks_name(self):
+    def _get_default_eks_cluster_name(self):
         return f'{self.stack.env_name}-eks'
 
     def _get_vars_set(self):
@@ -107,10 +85,15 @@ class Main(newSchedStack):
         self.stack.init_variables()
         self.stack.verify_variables()
 
+        if self.stack.get_attr("eks_cluster"):
+            eks_cluster = self.stack.eks_cluster
+        else:
+            eks_cluster = self._get_default_eks_cluster_name()  # default
+
         vpc_name = self._get_vpc_name()
         arguments = {
             "vpc_name": vpc_name,
-            "eks_cluster": self._get_eks_name(),
+            "eks_cluster": eks_cluster,
             "publish_to_saas": True,
             "cloud_tags_hash": self._set_cloud_tag_hash(),
             "aws_default_region": self.stack.aws_default_region
@@ -186,63 +169,12 @@ class Main(newSchedStack):
         return self.stack.aws_nat_inst_vpc.insert(display=True,
                                                   **inputargs)
 
-    ###############################################################
-    # eks settings
-    ###############################################################
-    def run_eks(self):
-
-        self.stack.init_variables()
-        self.stack.verify_variables()
-
-        arguments = {
-            "publish_to_saas": True,
-            "eks_node_capacity_type": "ON_DEMAND",
-            "eks_node_ami_type": "AL2_x86_64",
-            "eks_node_max_capacity": 1,
-            "eks_node_min_capacity": 1,
-            "eks_node_desired_capacity": 1,
-            "eks_node_disksize": 25,
-            "eks_node_instance_types":["t3.medium","t3.large"],
-            "vpc_name": self._get_vpc_name(),
-            "eks_cluster": self._get_eks_name(),
-            "cloud_tags_hash": self._set_cloud_tag_hash(),
-            "aws_default_region": self.stack.aws_default_region,
-            "vpc_id":self.stack.vpc_id,
-        }
-
-        add_args = {
-            "eks_cluster_version":self.stack.eks_cluster_version,
-            "eks_cluster_subnet_ids":self.stack.eks_cluster_subnet_ids,
-            "eks_cluster_sg_id":self.stack.eks_cluster_sg_id,
-            "eks_node_group_subnet_ids":self.stack.eks_node_group_subnet_ids,
-            "eks_node_role_arn":self.stack.eks_node_role_arn
-        }
-
-        arguments.update(add_args)
-
-        human_description = f'Create eks"'
-
-        inputargs = {
-            "arguments": arguments,
-            "automation_phase": "infrastructure",
-            "human_description": human_description
-        }
-
-        return self.stack.aws_eks.insert(display=True,
-                                         **inputargs)
-
-
     def run(self):
 
         self.stack.unset_parallel()
         self.add_job("vpc")
         self.add_job("network_vars_set")
         self.add_job("nat_instance")
-
-        ###############################################################
-        # eks settings
-        ###############################################################
-        self.add_job("eks")
 
         return self.finalize_jobs()
 
@@ -264,10 +196,7 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
-        sched.on_success = ["nat_instance","aws_eks"]
-
-        #sched.on_success = ["nat_instance"]
-
+        sched.on_success = ["nat_instance"]
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -276,17 +205,6 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = 'Create nat instance'
-        self.add_schedule()
-
-        ###############################################################
-        # eks settings
-        ###############################################################
-        sched = self.new_schedule()
-        sched.job = "aws_eks"
-        sched.archive.timeout = 2700
-        sched.archive.timewait = 300
-        sched.automation_phase = "infrastructure"
-        sched.human_description = 'Create Eks cluster'
         self.add_schedule()
 
         return self.get_schedules()
