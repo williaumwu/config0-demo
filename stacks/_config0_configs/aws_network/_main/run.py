@@ -53,17 +53,20 @@ class Main(newSchedStack):
                                 default="1.29")
 
         self.parse.add_optional(key="eks_cluster_subnet_ids",
+                                default="null",
                                 types="str")
 
         self.parse.add_optional(key="eks_cluster_sg_id",
+                                default="null",
                                 types="str")
 
         self.parse.add_optional(key="eks_node_group_subnet_ids",
+                                default="null",
                                 types="str")
 
         self.parse.add_optional(key="eks_node_role_arn",
+                                default="null",
                                 types="str")
-
 
         # add substack
         self.stack.add_substack("config0-publish:::aws_vpc_simple")
