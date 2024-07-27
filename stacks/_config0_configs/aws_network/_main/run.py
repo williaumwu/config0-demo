@@ -42,7 +42,7 @@ class Main(newSchedStack):
                                 default="t3.nano,t3a.nano")
 
         # add substack
-        self.stack.add_substack("williamwu:::network")
+        self.stack.add_substack("williaumwu:::network")
         self.stack.add_substack("config0-publish:::aws_eks")
 
         self.stack.init_substacks()
