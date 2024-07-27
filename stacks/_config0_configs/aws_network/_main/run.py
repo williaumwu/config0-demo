@@ -41,6 +41,51 @@ class Main(newSchedStack):
                                 types="str",
                                 default="t3.nano,t3a.nano")
 
+        # eks
+        self.parse.add_optional(key="eks_cluster_version",
+                                types="str",
+                                default="1.29")
+
+        self.parse.add_optional(key="eks_cluster_subnet_ids",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_cluster_sg_id",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_group_subnet_ids",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_role_arn",
+                                default="null",
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_max_capacity",
+                                default=1,
+                                types="int")
+
+        self.parse.add_optional(key="eks_node_min_capacity",
+                                default=1,
+                                types="int")
+
+        self.parse.add_optional(key="eks_node_desired_capacity",
+                                default=1,
+                                types="int")
+
+        self.parse.add_optional(key="eks_node_disksize",
+                                default=25,
+                                types="int")
+
+        self.parse.add_optional(key="eks_node_instance_types",
+                                default=["t3.medium","t3.large"],
+                                types="str")
+
+        self.parse.add_optional(key="eks_node_ami_type",
+                                default="AL2_x86_64",
+                                types="str")
+
         # add substack
         self.stack.add_substack("williaumwu:::network")
         self.stack.add_substack("config0-publish:::aws_eks")
@@ -96,53 +141,6 @@ class Main(newSchedStack):
 
     def run_eks(self):
 
-        self.parse.add_optional(key="eks_cluster_version",
-                                types="str",
-                                default="1.29")
-
-        self.parse.add_optional(key="eks_cluster_subnet_ids",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_cluster_sg_id",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_group_subnet_ids",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_role_arn",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_max_capacity",
-                                default=1,
-                                types="int")
-
-        self.parse.add_optional(key="eks_node_min_capacity",
-                                default=1,
-                                types="int")
-
-        self.parse.add_optional(key="eks_node_desired_capacity",
-                                default=1,
-                                types="int")
-
-        self.parse.add_optional(key="eks_node_disksize",
-                                default=25,
-                                types="int")
-
-        self.parse.add_optional(key="eks_node_instance_types",
-                                default=["t3.medium","t3.large"],
-                                types="str")
-
-        self.parse.add_optional(key="eks_node_ami_type",
-                                default="AL2_x86_64",
-                                types="str")
-
-
-
-
         self.stack.init_variables()
         self.stack.verify_variables()
 
@@ -197,7 +195,7 @@ class Main(newSchedStack):
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates network"
         sched.conditions.retries = 1
-        sched.on_success = ["eks"]
+        #sched.on_success = ["eks"]
         self.add_schedule()
 
         sched = self.new_schedule()
