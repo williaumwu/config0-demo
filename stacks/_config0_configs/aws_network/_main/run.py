@@ -164,8 +164,6 @@ class Main(newSchedStack):
             "eks_node_role_arn":self.stack.eks_node_role_arn
         }
 
-        arguments.update(add_args)
-
         human_description = f'Create eks"'
 
         inputargs = {
