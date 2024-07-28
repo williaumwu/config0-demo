@@ -195,7 +195,7 @@ class Main(newSchedStack):
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates network"
         sched.conditions.retries = 1
-        #sched.on_success = ["eks"]
+        sched.on_success = ["eks"]
         self.add_schedule()
 
         sched = self.new_schedule()
