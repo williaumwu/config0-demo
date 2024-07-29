@@ -209,4 +209,3 @@ class Main(newSchedStack):
 
         return self.get_schedules()
 
-
