@@ -50,11 +50,11 @@ def run(stackargs):
                              default="gp2",
                              types="str")
 
-    stack.parse.add_optional(key="rds_master_username",
+    stack.parse.add_optional(key="db_master_username",
                              default=None,
                              types="str")
 
-    stack.parse.add_optional(key="rds_master_password",
+    stack.parse.add_optional(key="db_master_password",
                              default=None,
                              types="str")
 
