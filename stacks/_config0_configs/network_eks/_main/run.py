@@ -80,7 +80,7 @@ class Main(newSchedStack):
 
         self.parse.add_optional(key="eks_node_instance_types",
                                 default=["t3.medium","t3.large"],
-                                types="str")
+                                types="list")
 
         self.parse.add_optional(key="eks_node_ami_type",
                                 default="AL2_x86_64",
