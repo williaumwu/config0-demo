@@ -132,10 +132,10 @@ def run(stackargs):
     stack.init_execgroups()
     stack.init_substacks()
 
-    # we can do both rds and eks in parallel
+    # we can do both db and eks in parallel
     stack.set_parallel()
 
-    # configure rds_name
+    # configure db
     mongodb_cluster = f'{stack.env_name}-mongodb'
 
     arguments = {
