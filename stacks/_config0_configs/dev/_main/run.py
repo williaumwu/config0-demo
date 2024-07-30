@@ -59,6 +59,9 @@ def run(stackargs):
                              types="str")
 
     # eks
+    stack.parse.add_required(key="vpc_id",
+                             types="str")
+
     stack.parse.add_optional(key="eks_cluster_version",
                              types="str",
                              default="1.29")
@@ -147,6 +150,7 @@ def run(stackargs):
 
     arguments = {
         "aws_default_region": stack.aws_default_region,
+        "vpc_id": stack.vpc_id,
         "eks_cluster_version": stack.eks_cluster_version,
         "eks_cluster_subnet_ids": stack.public_subnet_ids,
         "eks_node_group_subnet_ids": stack.private_subnet_ids,
