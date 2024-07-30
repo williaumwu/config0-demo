@@ -4,6 +4,10 @@ def run(stackargs):
     stack = newStack(stackargs)
 
     # general
+    stack.parse.add_optional(key="aws_default_region",
+                             default="eu-west-1",
+                             types="str")
+
     stack.parse.add_required(key="env_name",
                              types="str")
 
