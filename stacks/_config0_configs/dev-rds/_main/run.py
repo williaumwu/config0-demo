@@ -22,10 +22,46 @@ def run(stackargs):
                              default="null",
                              types="str")
 
-    stack.parse.add_required(key="vpc_id",
+    # rds
+    stack.parse.add_required(key="db_sg_id",
+                             types="str")
+
+    stack.parse.add_optional(key="db_allocated_storage",
+                             default=30,
+                             types="int")
+
+    stack.parse.add_optional(key="db_engine",
+                             default="MySQL",
+                             types="str")
+
+    stack.parse.add_optional(key="db_engine_version",
+                             default="8.0.35",
+                             types="float")
+
+    stack.parse.add_optional(key="db_instance_class",
+                             default="db.t3.micro",
+                             types="str")
+
+    stack.parse.add_optional(key="db_multi_az",
+                             default="false",
+                             types="bool")
+
+    stack.parse.add_optional(key="db_storage_type",
+                             default="gp2",
+                             types="str")
+
+    stack.parse.add_optional(key="db_master_username",
+                             default=None,
+                             types="str")
+
+    stack.parse.add_optional(key="db_master_password",
+                             default=None,
                              types="str")
 
     # eks
+    stack.parse.add_required(key="vpc_id",
+                             types="str")
+
     stack.parse.add_optional(key="eks_cluster_version",
                              types="str",
                              default="1.29")
@@ -62,69 +98,8 @@ def run(stackargs):
                              default="AL2_x86_64",
                              types="str")
 
-    # mongodb
-    stack.parse.add_required(key="vpc_name",
-                             types="str")
-
-    stack.parse.add_required(key="bastion_sg_id",
-                             default="null")
-
-    stack.parse.add_required(key="bastion_subnet_ids",
-                             default="null")
-
-    stack.parse.add_optional(key="bastion_ami",
-                             default="null")
-
-    stack.parse.add_optional(key="bastion_ami_filter",
-                             default="null")
-
-    stack.parse.add_optional(key="bastion_ami_owner",
-                             default="null")
-
-    stack.parse.add_required(key="mongodb_num_of_replicas",
-                             types="int",
-                             default="1")
-
-    stack.parse.add_optional(key="mongodb_ami",
-                             types="str",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_ami_filter",
-                             types="str",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_ami_owner",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_username",
-                             types="str",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_password",
-                             types="str",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_version",
-                             types="str",
-                             default="4.2")
-
-    stack.parse.add_required(key="db_sg_id",
-                             default="null")
-
-    stack.parse.add_optional(key="mongodb_instance_type",
-                             types="str",
-                             default="t3.micro")
-
-    stack.parse.add_optional(key="mongodb_disksize",
-                             types="int",
-                             default="20")
-
-    stack.parse.add_optional(key="mongodb_volume_size",
-                             types="int",
-                             default=100)
-
     # add substack
-    stack.add_substack("config0-publish:::mongodb_replica_on_ec2")
+    stack.add_substack("config0-publish:::aws_rds")
     stack.add_substack("config0-publish:::aws_eks")
 
     # initialize
@@ -132,48 +107,43 @@ def run(stackargs):
     stack.init_execgroups()
     stack.init_substacks()
 
-    # we can do both db and eks in parallel
+    # we can do both rds and eks in parallel
     stack.set_parallel()
 
-    # configure db
-    mongodb_cluster = f'{stack.env_name}-mongodb'
+    # configure rds_name
+    rds_name = f'{stack.env_name}-rds'
 
     arguments = {
         "aws_default_region": stack.aws_default_region,
-        "mongodb_cluster": mongodb_cluster,
-        "mongodb_version": stack.mongodb_version,
-        "subnet_ids": stack.public_subnet_ids,
-        "cloud_tags_hash": stack.cloud_tags_hash,
-        "num_of_replicas": stack.mongodb_num_of_replicas,
-        "ami": stack.mongodb_ami,
-        "ami_filter": stack.mongodb_ami_filter,
-        "ami_owner": stack.mongodb_ami_owner,
-        "bastion_sg_id": stack.bastion_sg_id,
-        "bastion_subnet_ids": stack.bastion_subnet_ids,
-        "bastion_ami": stack.bastion_ami,
-        "bastion_ami_filter": stack.bastion_ami_filter,
-        "bastion_ami_owner": stack.bastion_ami_owner,
         "sg_id": stack.db_sg_id,
-        "instance_type": stack.mongodb_instance_type,
-        "disksize": stack.mongodb_disksize,
-        "volume_size": stack.mongodb_volume_size,
-        "publish_to_saas": True
+        "subnet_ids": stack.private_subnet_ids,
+        "allocated_storage": stack.db_allocated_storage,
+        "engine": stack.db_engine,
+        "engine_version": stack.db_engine_version,
+        "instance_class": stack.db_instance_class,
+        "storage_type": stack.db_storage_type,
+        "publicly_accessible":False,
+        "storage_encrypted":True,
+        "cloud_tags_hash": stack.cloud_tags_hash,
+        "rds_name": rds_name,
     }
+    if stack.db_multi_az:
+        arguments["multi_az"] = stack.db_multi_az
 
-    if stack.get_attr("mongodb_username"):
-        arguments["mongodb_username"] = stack.mongodb_username
+    if stack.db_master_username:
+        arguments["master_username"] = stack.db_master_username
 
-    if stack.get_attr("mongodb_password"):
-        arguments["mongodb_password"] = stack.mongodb_password
+    if stack.db_master_password:
+        arguments["master_password"] = stack.db_master_password
 
     inputargs = {
         "arguments": arguments,
         "automation_phase": "infrastructure",
-        "human_description": f'create mongodb_cluster "{mongodb_cluster}"'
+        "human_description": f'create rds "{rds_name}"'
     }
 
-    stack.mongodb_replica_on_ec2.insert(display=True,
-                                        **inputargs)
+    stack.aws_rds.insert(display=True,
+                         **inputargs)
 
     # eks
     eks_cluster = f'{stack.env_name}-eks'
