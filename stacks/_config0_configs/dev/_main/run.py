@@ -198,6 +198,10 @@ def run(stackargs):
     if stack.eks_cluster_sg_id:
         arguments["eks_cluster_sg_id"] = stack.eks_cluster_sg_id
 
+    # testtest456
+    stack.logger.debug("a"*32)
+    stack.logger.json(arguments)
+    stack.logger.debug("a"*32)
 
     inputargs = {
         "arguments": arguments,
