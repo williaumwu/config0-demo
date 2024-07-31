@@ -175,7 +175,6 @@ def run(stackargs):
     stack.logger.debug(arguments)
     print(arguments)
     stack.logger.debug("a"*32)
-    raise Exception('a'*32)
 
     stack.mongodb_replica_on_ec2.insert(display=True,
                                         **inputargs)
