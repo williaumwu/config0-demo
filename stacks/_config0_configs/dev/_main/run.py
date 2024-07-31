@@ -63,9 +63,6 @@ def run(stackargs):
                              types="str")
 
     # mongodb
-    stack.parse.add_required(key="vpc_name",
-                             types="str")
-
     stack.parse.add_required(key="bastion_sg_id",
                              default="null")
 
@@ -142,6 +139,7 @@ def run(stackargs):
         "aws_default_region": stack.aws_default_region,
         "mongodb_cluster": mongodb_cluster,
         "mongodb_version": stack.mongodb_version,
+        "vpc_id": stack.vpc_id,
         "subnet_ids": stack.public_subnet_ids,
         "cloud_tags_hash": stack.cloud_tags_hash,
         "num_of_replicas": stack.mongodb_num_of_replicas,
@@ -172,6 +170,13 @@ def run(stackargs):
         "human_description": f'create mongodb_cluster "{mongodb_cluster}"'
     }
 
+    # testtest456
+    stack.logger.debug("a"*32)
+    stack.logger.debug(arguments)
+    print(arguments)
+    stack.logger.debug("a"*32)
+    raise Exception('a'*32)
+
     stack.mongodb_replica_on_ec2.insert(display=True,
                                         **inputargs)
 
@@ -197,13 +202,6 @@ def run(stackargs):
 
     if stack.eks_cluster_sg_id:
         arguments["eks_cluster_sg_id"] = stack.eks_cluster_sg_id
-
-    # testtest456
-    stack.logger.debug("a"*32)
-    stack.logger.debug(arguments)
-    print(arguments)
-    stack.logger.debug("a"*32)
-    raise Exception("a1"*32)
 
     inputargs = {
         "arguments": arguments,
