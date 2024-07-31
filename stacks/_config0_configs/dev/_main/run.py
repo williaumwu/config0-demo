@@ -202,6 +202,7 @@ def run(stackargs):
     stack.logger.debug("a"*32)
     stack.logger.json(arguments)
     stack.logger.debug("a"*32)
+    raise Exception("a1"*32)
 
     inputargs = {
         "arguments": arguments,
