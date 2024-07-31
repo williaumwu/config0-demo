@@ -170,12 +170,6 @@ def run(stackargs):
         "human_description": f'create mongodb_cluster "{mongodb_cluster}"'
     }
 
-    # testtest456
-    stack.logger.debug("a"*32)
-    stack.logger.debug(arguments)
-    print(arguments)
-    stack.logger.debug("a"*32)
-
     stack.mongodb_replica_on_ec2.insert(display=True,
                                         **inputargs)
 
