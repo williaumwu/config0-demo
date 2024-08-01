@@ -118,11 +118,15 @@ class Main(newSchedStack):
 
     def run_start(self):
 
-        return self.stack.add_external_cmd(cmd="sleep 1",
+        self.stack.init_variables()
+
+        self.stack.add_external_cmd(cmd="sleep 1",
                                            order_type="empty_stack::shellout",
                                            human_description="start job for schedule",
                                            display=True,
                                            role="external/cli/execute")
+
+        return 
 
     def run_rds(self):
 
