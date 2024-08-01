@@ -109,10 +109,10 @@ class Main(newSchedStack):
     def _set_vars(self):
 
         self.stack.set_variable("rds_name",
-                                rds_name = f'{self.stack.env_name}-rds')
+                                f'{self.stack.env_name}-rds')
 
         self.stack.set_variable("eks_cluster",
-                                eks_cluster = f'{self.stack.env_name}-eks')
+                                f'{self.stack.env_name}-eks')
 
     def run_start(self):
 
