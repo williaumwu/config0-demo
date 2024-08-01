@@ -134,7 +134,7 @@ class Main(newSchedStack):
 
         self.stack.init_variables()
         self.stack.verify_variables()
-        self._set_names()
+        self._set_vars()
 
         arguments = {
             "aws_default_region": self.stack.aws_default_region,
@@ -173,7 +173,7 @@ class Main(newSchedStack):
 
         self.stack.init_variables()
         self.stack.verify_variables()
-        self._set_names()
+        self._set_vars()
 
         arguments = {
             "aws_default_region": self.stack.aws_default_region,
@@ -216,22 +216,21 @@ class Main(newSchedStack):
 
     def schedule(self):
 
-        #sched = self.new_schedule()
-        #sched.job = "start"
-        #sched.archive.timeout = 600
-        #sched.archive.timewait = 60
-        #sched.automation_phase = "infrastructure"
-        #sched.human_description = "starts schedule"
-        #sched.conditions.retries = 1
-        #sched.on_success = ["rds","eks"]
-        #self.add_schedule()
+        sched = self.new_schedule()
+        sched.job = "start"
+        sched.archive.timeout = 600
+        sched.archive.timewait = 60
+        sched.automation_phase = "infrastructure"
+        sched.human_description = "starts schedule"
+        sched.conditions.retries = 1
+        sched.on_success = ["rds"]
+        self.add_schedule()
 
         sched = self.new_schedule()
         sched.job = "rds"
         sched.archive.timeout = 1800
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
-        sched.conditions.retries = 1
         sched.human_description = 'create rds'
         sched.on_success = ["eks"]
         self.add_schedule()
