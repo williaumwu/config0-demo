@@ -100,7 +100,6 @@ class Main(newSchedStack):
                                  types="str")
 
         # add substack
-        # config0-publish:::config0_core::empty_stack
         self.stack.add_substack("config0-publish:::empty_stack")
         self.stack.add_substack("config0-publish:::aws_rds")
         self.stack.add_substack("config0-publish:::aws_eks")
@@ -217,22 +216,24 @@ class Main(newSchedStack):
 
     def schedule(self):
 
-        sched = self.new_schedule()
-        sched.job = "start"
-        sched.archive.timeout = 600
-        sched.archive.timewait = 60
-        sched.automation_phase = "infrastructure"
-        sched.human_description = "starts schedule"
-        sched.conditions.retries = 1
-        sched.on_success = ["rds","eks"]
-        self.add_schedule()
+        #sched = self.new_schedule()
+        #sched.job = "start"
+        #sched.archive.timeout = 600
+        #sched.archive.timewait = 60
+        #sched.automation_phase = "infrastructure"
+        #sched.human_description = "starts schedule"
+        #sched.conditions.retries = 1
+        #sched.on_success = ["rds","eks"]
+        #self.add_schedule()
 
         sched = self.new_schedule()
         sched.job = "rds"
         sched.archive.timeout = 1800
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
-        sched.human_description = f'create rds'
+        sched.conditions.retries = 1
+        sched.human_description = 'create rds'
+        sched.on_success = ["eks"]
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -240,7 +241,7 @@ class Main(newSchedStack):
         sched.archive.timeout = 2700
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
-        sched.human_description = f'create eks cluster'
+        sched.human_description = 'create eks cluster'
         self.add_schedule()
 
         return self.get_schedules()
