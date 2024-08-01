@@ -1,181 +1,226 @@
-def run(stackargs):
+class Main(newSchedStack):
 
-    # instantiate authoring stack
-    stack = newStack(stackargs)
+    def __init__(self,stackargs):
 
-    # general
-    stack.parse.add_optional(key="aws_default_region",
-                             default="eu-west-1",
-                             types="str")
+        newSchedStack.__init__(self,stackargs)
 
-    stack.parse.add_required(key="env_name",
-                             types="str")
+        # general
+        self.parse.add_optional(key="aws_default_region",
+                                 default="eu-west-1",
+                                 types="str")
 
-    stack.parse.add_optional(key="cloud_tags_hash",
-                             types="str")
+        self.parse.add_required(key="env_name",
+                                 types="str")
 
-    stack.parse.add_optional(key="public_subnet_ids",
-                             default="null",
-                             types="str")
+        self.parse.add_optional(key="cloud_tags_hash",
+                                 types="str")
 
-    stack.parse.add_optional(key="private_subnet_ids",
-                             default="null",
-                             types="str")
+        self.parse.add_optional(key="public_subnet_ids",
+                                 default="null",
+                                 types="str")
 
-    # rds
-    stack.parse.add_required(key="db_sg_id",
-                             types="str")
+        self.parse.add_optional(key="private_subnet_ids",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_optional(key="db_allocated_storage",
-                             default=30,
-                             types="int")
+        # rds
+        self.parse.add_optional(key="rds_name",
+                                default="null",
+                                types="str")
 
-    stack.parse.add_optional(key="db_engine",
-                             default="MySQL",
-                             types="str")
+        self.parse.add_required(key="db_sg_id",
+                                 types="str")
 
-    stack.parse.add_optional(key="db_engine_version",
-                             default="8.0.35",
-                             types="float")
+        self.parse.add_optional(key="db_allocated_storage",
+                                 default=30,
+                                 types="int")
 
-    stack.parse.add_optional(key="db_instance_class",
-                             default="db.t3.micro",
-                             types="str")
+        self.parse.add_optional(key="db_engine",
+                                 default="MySQL",
+                                 types="str")
 
-    stack.parse.add_optional(key="db_multi_az",
-                             default="false",
-                             types="bool")
+        self.parse.add_optional(key="db_engine_version",
+                                 default="8.0.35",
+                                 types="float")
 
-    stack.parse.add_optional(key="db_storage_type",
-                             default="gp2",
-                             types="str")
+        self.parse.add_optional(key="db_instance_class",
+                                 default="db.t3.micro",
+                                 types="str")
 
-    stack.parse.add_optional(key="db_master_username",
-                             default=None,
-                             types="str")
+        self.parse.add_optional(key="db_multi_az",
+                                 default="false",
+                                 types="bool")
 
-    stack.parse.add_optional(key="db_master_password",
-                             default=None,
-                             types="str")
+        self.parse.add_optional(key="db_storage_type",
+                                 default="gp2",
+                                 types="str")
 
-    # eks
-    stack.parse.add_required(key="vpc_id",
-                             types="str")
+        self.parse.add_optional(key="db_master_username",
+                                 default=None,
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_cluster_version",
-                             types="str",
-                             default="1.29")
+        self.parse.add_optional(key="db_master_password",
+                                 default=None,
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_cluster_sg_id",
-                             default="null",
-                             types="str")
+        # eks
+        self.parse.add_optional(key="eks_cluster",
+                                default="null",
+                                types="str")
 
-    stack.parse.add_optional(key="eks_node_role_arn",
-                             default="null",
-                             types="str")
+        self.parse.add_required(key="vpc_id",
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_node_max_capacity",
-                             default=1,
-                             types="int")
+        self.parse.add_optional(key="eks_cluster_version",
+                                 types="str",
+                                 default="1.29")
 
-    stack.parse.add_optional(key="eks_node_min_capacity",
-                             default=1,
-                             types="int")
+        self.parse.add_optional(key="eks_cluster_sg_id",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_node_desired_capacity",
-                             default=1,
-                             types="int")
+        self.parse.add_optional(key="eks_node_role_arn",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_node_disksize",
-                             default=25,
-                             types="int")
+        self.parse.add_optional(key="eks_node_max_capacity",
+                                 default=1,
+                                 types="int")
 
-    stack.parse.add_optional(key="eks_node_instance_types",
-                             default=["t3.medium","t3.large"],
-                             types="list")
+        self.parse.add_optional(key="eks_node_min_capacity",
+                                 default=1,
+                                 types="int")
 
-    stack.parse.add_optional(key="eks_node_ami_type",
-                             default="AL2_x86_64",
-                             types="str")
+        self.parse.add_optional(key="eks_node_desired_capacity",
+                                 default=1,
+                                 types="int")
 
-    # add substack
-    stack.add_substack("config0-publish:::aws_rds")
-    stack.add_substack("config0-publish:::aws_eks")
+        self.parse.add_optional(key="eks_node_disksize",
+                                 default=25,
+                                 types="int")
 
-    # initialize
-    stack.init_variables()
-    stack.init_execgroups()
-    stack.init_substacks()
+        self.parse.add_optional(key="eks_node_instance_types",
+                                 default=["t3.medium","t3.large"],
+                                 types="list")
 
-    # we can do both rds and eks in parallel
-    stack.set_parallel()
+        self.parse.add_optional(key="eks_node_ami_type",
+                                 default="AL2_x86_64",
+                                 types="str")
 
-    # configure rds_name
-    rds_name = f'{stack.env_name}-rds'
+        # add substack
+        self.stack.add_substack("config0-publish:::empty_stack")
+        self.stack.add_substack("config0-publish:::aws_rds")
+        self.stack.add_substack("config0-publish:::aws_eks")
 
-    arguments = {
-        "aws_default_region": stack.aws_default_region,
-        "sg_id": stack.db_sg_id,
-        "subnet_ids": stack.private_subnet_ids,
-        "allocated_storage": stack.db_allocated_storage,
-        "engine": stack.db_engine,
-        "engine_version": stack.db_engine_version,
-        "instance_class": stack.db_instance_class,
-        "storage_type": stack.db_storage_type,
-        "publicly_accessible":False,
-        "storage_encrypted":True,
-        "cloud_tags_hash": stack.cloud_tags_hash,
-        "rds_name": rds_name,
-    }
-    if stack.db_multi_az:
-        arguments["multi_az"] = stack.db_multi_az
+        self.stack.init_substacks()
 
-    if stack.db_master_username:
-        arguments["master_username"] = stack.db_master_username
+    def _set_vars(self):
 
-    if stack.db_master_password:
-        arguments["master_password"] = stack.db_master_password
+        if not self.stack.get_attr("rds_name"):
+            self.stack.set_variable("rds_name",
+                                    f'{self.stack.env_name}-rds')
 
-    inputargs = {
-        "arguments": arguments,
-        "automation_phase": "infrastructure",
-        "human_description": f'create rds "{rds_name}"'
-    }
+        if not self.stack.get_attr("eks_cluster"):
+            self.stack.set_variable("eks_cluster",
+                                    f'{self.stack.env_name}-eks')
 
-    stack.aws_rds.insert(display=True,
-                         **inputargs)
+    def _rds(self):
 
-    # eks
-    eks_cluster = f'{stack.env_name}-eks'
+        self.stack.init_variables()
+        self.stack.verify_variables()
+        self._set_vars()
 
-    arguments = {
-        "aws_default_region": stack.aws_default_region,
-        "vpc_id": stack.vpc_id,
-        "eks_cluster_version": stack.eks_cluster_version,
-        "eks_cluster_subnet_ids": stack.public_subnet_ids,
-        "eks_node_group_subnet_ids": stack.private_subnet_ids,
-        "eks_node_role_arn": stack.eks_node_role_arn,
-        "eks_node_max_capacity": stack.eks_node_max_capacity,
-        "eks_node_min_capacity": stack.eks_node_min_capacity,
-        "eks_node_desired_capacity": stack.eks_node_desired_capacity,
-        "eks_node_disksize": stack.eks_node_disksize,
-        "eks_node_instance_types": stack.eks_node_instance_types,
-        "eks_node_ami_type": stack.eks_node_ami_type,
-        "cloud_tags_hash": stack.cloud_tags_hash,
-        "eks_cluster": eks_cluster,
-    }
+        arguments = {
+            "aws_default_region": self.stack.aws_default_region,
+            "sg_id": self.stack.db_sg_id,
+            "subnet_ids": self.stack.private_subnet_ids,
+            "allocated_storage": self.stack.db_allocated_storage,
+            "engine": self.stack.db_engine,
+            "engine_version": self.stack.db_engine_version,
+            "instance_class": self.stack.db_instance_class,
+            "storage_type": self.stack.db_storage_type,
+            "publicly_accessible":False,
+            "storage_encrypted":True,
+            "cloud_tags_hash": self.stack.cloud_tags_hash,
+            "rds_name": self.stack.rds_name,
+        }
 
-    if stack.eks_cluster_sg_id:
-        arguments["eks_cluster_sg_id"] = stack.eks_cluster_sg_id
+        if self.stack.db_multi_az:
+            arguments["multi_az"] = self.stack.db_multi_az
+
+        if self.stack.db_master_username:
+            arguments["master_username"] = self.stack.db_master_username
+
+        if self.stack.db_master_password:
+            arguments["master_password"] = self.stack.db_master_password
+
+        inputargs = {
+            "arguments": arguments,
+            "automation_phase": "infrastructure",
+            "human_description": f'create rds "{self.stack.rds_name}"'
+        }
+
+        return self.stack.aws_rds.insert(display=True,
+                                         **inputargs)
+
+    def _eks(self):
+
+        self.stack.init_variables()
+        self.stack.verify_variables()
+        self._set_vars()
+
+        arguments = {
+            "aws_default_region": self.stack.aws_default_region,
+            "vpc_id": self.stack.vpc_id,
+            "eks_cluster_version": self.stack.eks_cluster_version,
+            "eks_cluster_subnet_ids": self.stack.public_subnet_ids,
+            "eks_node_group_subnet_ids": self.stack.private_subnet_ids,
+            "eks_node_role_arn": self.stack.eks_node_role_arn,
+            "eks_node_max_capacity": self.stack.eks_node_max_capacity,
+            "eks_node_min_capacity": self.stack.eks_node_min_capacity,
+            "eks_node_desired_capacity": self.stack.eks_node_desired_capacity,
+            "eks_node_disksize": self.stack.eks_node_disksize,
+            "eks_node_instance_types": self.stack.eks_node_instance_types,
+            "eks_node_ami_type": self.stack.eks_node_ami_type,
+            "cloud_tags_hash": self.stack.cloud_tags_hash,
+            "eks_cluster": self.stack.eks_cluster,
+        }
+
+        if self.stack.eks_cluster_sg_id:
+            arguments["eks_cluster_sg_id"] = self.stack.eks_cluster_sg_id
 
 
-    inputargs = {
-        "arguments": arguments,
-        "automation_phase": "infrastructure",
-        "human_description": f'create eks cluster "{eks_cluster}"'
-    }
+        inputargs = {
+            "arguments": arguments,
+            "automation_phase": "infrastructure",
+            "human_description": f'create eks cluster "{self.stack.eks_cluster}"'
+        }
 
-    stack.aws_eks.insert(display=True,
-                         **inputargs)
+        return self.stack.aws_eks.insert(display=True,
+                                         **inputargs)
 
-    return stack.get_results()
+    def run_rds_eks(self):
+
+        self.set_parallel()
+        self._eks()
+        self._rds()
+
+    def run(self):
+
+        self.stack.unset_parallel(sched_init=True)
+        self.add_job("rds_eks")
+
+        return self.finalize_jobs()
+
+    def schedule(self):
+
+        sched = self.new_schedule()
+        sched.job = "rds"
+        sched.archive.timeout = 2700
+        sched.archive.timewait = 120
+        sched.conditions.retries = 1
+        sched.automation_phase = "infrastructure"
+        sched.human_description = 'create rds/eks'
+        self.add_schedule()
+
+        return self.get_schedules()
