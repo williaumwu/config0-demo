@@ -108,6 +108,7 @@ class Main(newSchedStack):
 
     def _set_vars(self):
 
+
         self.stack.set_variable("rds_name",
                                 f'{self.stack.env_name}-rds')
 
