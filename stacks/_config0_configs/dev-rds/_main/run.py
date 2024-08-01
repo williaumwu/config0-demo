@@ -100,6 +100,8 @@ class Main(newSchedStack):
                                  types="str")
 
         # add substack
+        # config0-publish:::config0_core::empty_stack
+        self.stack.add_substack("config0-publish:::empty_stack")
         self.stack.add_substack("config0-publish:::aws_rds")
         self.stack.add_substack("config0-publish:::aws_eks")
 
@@ -116,17 +118,20 @@ class Main(newSchedStack):
         self.stack.set_variable("eks_cluster",
                                 eks_cluster = f'{self.stack.env_name}-eks')
 
-    def run_start(self):
+    def run_start_sched(self):
 
         self.stack.init_variables()
 
-        self.stack.add_external_cmd(cmd="sleep 1",
-                                           order_type="empty_stack::shellout",
-                                           human_description="start job for schedule",
-                                           display=True,
-                                           role="external/cli/execute")
+        description="start job for schedule",
 
-        return 
+        inputargs = {
+            "arguments": {"description":description},
+            "automation_phase": "infrastructure",
+            "human_description": 'start of sched jobs'
+        }
+
+        return self.stack.empty_stack.insert(display=True,
+                                             **inputargs)
 
     def run_rds(self):
 
@@ -201,7 +206,7 @@ class Main(newSchedStack):
     def run(self):
 
         self.stack.unset_parallel(sched_init=True)
-        self.add_job("start")
+        self.add_job("start_sched")
         self.add_job("rds")
         self.add_job("eks")
 
@@ -210,7 +215,7 @@ class Main(newSchedStack):
     def schedule(self):
 
         sched = self.new_schedule()
-        sched.job = "start"
+        sched.job = "start_sched"
         sched.archive.timeout = 600
         sched.archive.timewait = 60
         sched.automation_phase = "infrastructure"
