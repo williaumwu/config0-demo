@@ -109,18 +109,16 @@ class Main(newSchedStack):
 
     def _set_vars(self):
 
-        self.stack.init_variables()
-        self.stack.verify_variables()
-
         self.stack.set_variable("rds_name",
                                 rds_name = f'{self.stack.env_name}-rds')
 
         self.stack.set_variable("eks_cluster",
                                 eks_cluster = f'{self.stack.env_name}-eks')
 
-    def run_start_sched(self):
+    def run_start(self):
 
         self.stack.init_variables()
+        self.stack.verify_variables()
 
         description="start job for schedule",
 
@@ -135,6 +133,8 @@ class Main(newSchedStack):
 
     def run_rds(self):
 
+        self.stack.init_variables()
+        self.stack.verify_variables()
         self._set_names()
 
         arguments = {
@@ -151,6 +151,7 @@ class Main(newSchedStack):
             "cloud_tags_hash": self.stack.cloud_tags_hash,
             "rds_name": self.stack.rds_name,
         }
+
         if self.stack.db_multi_az:
             arguments["multi_az"] = self.stack.db_multi_az
 
@@ -171,6 +172,8 @@ class Main(newSchedStack):
 
     def run_eks(self):
 
+        self.stack.init_variables()
+        self.stack.verify_variables()
         self._set_names()
 
         arguments = {
@@ -206,7 +209,7 @@ class Main(newSchedStack):
     def run(self):
 
         self.stack.unset_parallel(sched_init=True)
-        self.add_job("start_sched")
+        self.add_job("start")
         self.add_job("rds")
         self.add_job("eks")
 
@@ -215,7 +218,7 @@ class Main(newSchedStack):
     def schedule(self):
 
         sched = self.new_schedule()
-        sched.job = "start_sched"
+        sched.job = "start"
         sched.archive.timeout = 600
         sched.archive.timewait = 60
         sched.automation_phase = "infrastructure"
@@ -229,7 +232,7 @@ class Main(newSchedStack):
         sched.archive.timeout = 1800
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
-        sched.human_description = f'create rds "{self.stack.rds_name}"'
+        sched.human_description = f'create rds'
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -237,7 +240,7 @@ class Main(newSchedStack):
         sched.archive.timeout = 2700
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
-        sched.human_description = f'create eks cluster "{self.stack.eks_cluster}"'
+        sched.human_description = f'create eks cluster'
         self.add_schedule()
 
         return self.get_schedules()
