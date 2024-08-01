@@ -221,10 +221,10 @@ class Main(newSchedStack):
         sched.job = "start"
         sched.archive.timeout = 600
         sched.archive.timewait = 60
+        sched.conditions.retries = 1
         sched.automation_phase = "infrastructure"
         sched.human_description = "starts schedule"
-        sched.conditions.retries = 1
-        sched.on_success = ["rds"]
+        sched.on_success = [ "rds", "eks" ]
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -233,7 +233,6 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = 'create rds'
-        sched.on_success = ["eks"]
         self.add_schedule()
 
         sched = self.new_schedule()
