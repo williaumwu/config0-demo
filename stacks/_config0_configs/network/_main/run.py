@@ -187,8 +187,7 @@ class Main(newSchedStack):
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates vpc"
         sched.conditions.retries = 1
-        # testtest456
-        sched.on_success = ["network_vars_set","nat_instance"]
+        sched.on_success = ["network_vars_set"]
         self.add_schedule()
 
         sched = self.new_schedule()
@@ -197,7 +196,7 @@ class Main(newSchedStack):
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
-        #sched.on_success = ["nat_instance"]
+        sched.on_success = ["nat_instance"]
         self.add_schedule()
 
         sched = self.new_schedule()
