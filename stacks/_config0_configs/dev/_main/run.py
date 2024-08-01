@@ -1,208 +1,234 @@
-def run(stackargs):
+class Main(newSchedStack):
 
-    # instantiate authoring stack
-    stack = newStack(stackargs)
+    def __init__(self,stackargs):
 
-    # general
-    stack.parse.add_optional(key="aws_default_region",
-                             default="eu-west-1",
-                             types="str")
+        newSchedStack.__init__(self,stackargs)
 
-    stack.parse.add_required(key="env_name",
-                             types="str")
+        # general
+        self.parse.add_optional(key="aws_default_region",
+                                 default="eu-west-1",
+                                 types="str")
 
-    stack.parse.add_optional(key="cloud_tags_hash",
-                             types="str")
+        self.parse.add_required(key="env_name",
+                                 types="str")
 
-    stack.parse.add_optional(key="public_subnet_ids",
-                             default="null",
-                             types="str")
+        self.parse.add_optional(key="cloud_tags_hash",
+                                 types="str")
 
-    stack.parse.add_optional(key="private_subnet_ids",
-                             default="null",
-                             types="str")
+        self.parse.add_optional(key="public_subnet_ids",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_required(key="vpc_id",
-                             types="str")
+        self.parse.add_optional(key="private_subnet_ids",
+                                 default="null",
+                                 types="str")
 
-    # eks
-    stack.parse.add_optional(key="eks_cluster_version",
-                             types="str",
-                             default="1.29")
+        # variable set
+        self.parse.add_optional(key="vars_set_labels_hash",
+                                default='null',
+                                types="str")
 
-    stack.parse.add_optional(key="eks_cluster_sg_id",
-                             default="null",
-                             types="str")
+        self.parse.add_optional(key="vars_set_arguments_hash",
+                                default='null',
+                                types="str")
 
-    stack.parse.add_optional(key="eks_node_role_arn",
-                             default="null",
-                             types="str")
+        # nat instance vars
+        self.parse.add_optional(key="private_route_table_id",
+                                default="null",
+                                types="str")
 
-    stack.parse.add_optional(key="eks_node_max_capacity",
-                             default=1,
-                             types="int")
+        # sensible defaults
+        self.parse.add_optional(key="nat_instance_types",
+                                types="str",
+                                default="t3.nano,t3a.nano")
 
-    stack.parse.add_optional(key="eks_node_min_capacity",
-                             default=1,
-                             types="int")
+        self.parse.add_optional(key="nat_cidr_ingress_accept",
+                                types="str",
+                                default="0.0.0.0/0")
 
-    stack.parse.add_optional(key="eks_node_desired_capacity",
-                             default=1,
-                             types="int")
+        # rds
+        self.parse.add_required(key="db_sg_id",
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_node_disksize",
-                             default=25,
-                             types="int")
+        self.parse.add_optional(key="db_allocated_storage",
+                                 default=30,
+                                 types="int")
 
-    stack.parse.add_optional(key="eks_node_instance_types",
-                             default=["t3.medium","t3.large"],
-                             types="list")
+        self.parse.add_optional(key="db_engine",
+                                 default="MySQL",
+                                 types="str")
 
-    stack.parse.add_optional(key="eks_node_ami_type",
-                             default="AL2_x86_64",
-                             types="str")
+        self.parse.add_optional(key="db_engine_version",
+                                 default="8.0.35",
+                                 types="float")
 
-    # mongodb
-    stack.parse.add_required(key="bastion_sg_id",
-                             default="null")
+        self.parse.add_optional(key="db_instance_class",
+                                 default="db.t3.micro",
+                                 types="str")
 
-    stack.parse.add_required(key="bastion_subnet_ids",
-                             default="null")
+        self.parse.add_optional(key="db_multi_az",
+                                 default="false",
+                                 types="bool")
 
-    stack.parse.add_optional(key="bastion_ami",
-                             default="null")
+        self.parse.add_optional(key="db_storage_type",
+                                 default="gp2",
+                                 types="str")
 
-    stack.parse.add_optional(key="bastion_ami_filter",
-                             default="null")
+        self.parse.add_optional(key="db_master_username",
+                                 default=None,
+                                 types="str")
 
-    stack.parse.add_optional(key="bastion_ami_owner",
-                             default="null")
+        self.parse.add_optional(key="db_master_password",
+                                 default=None,
+                                 types="str")
 
-    stack.parse.add_required(key="mongodb_num_of_replicas",
-                             types="int",
-                             default="1")
+        # eks
+        self.parse.add_required(key="vpc_id",
+                                 types="str")
 
-    stack.parse.add_optional(key="mongodb_ami",
-                             types="str",
-                             default="null")
+        self.parse.add_optional(key="eks_cluster_version",
+                                 types="str",
+                                 default="1.29")
 
-    stack.parse.add_optional(key="mongodb_ami_filter",
-                             types="str",
-                             default="null")
+        self.parse.add_optional(key="eks_cluster_sg_id",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_optional(key="mongodb_ami_owner",
-                             default="null")
+        self.parse.add_optional(key="eks_node_role_arn",
+                                 default="null",
+                                 types="str")
 
-    stack.parse.add_optional(key="mongodb_username",
-                             types="str",
-                             default="null")
+        self.parse.add_optional(key="eks_node_max_capacity",
+                                 default=1,
+                                 types="int")
 
-    stack.parse.add_optional(key="mongodb_password",
-                             types="str",
-                             default="null")
+        self.parse.add_optional(key="eks_node_min_capacity",
+                                 default=1,
+                                 types="int")
 
-    stack.parse.add_optional(key="mongodb_version",
-                             types="str",
-                             default="4.2")
+        self.parse.add_optional(key="eks_node_desired_capacity",
+                                 default=1,
+                                 types="int")
 
-    stack.parse.add_required(key="db_sg_id",
-                             default="null")
+        self.parse.add_optional(key="eks_node_disksize",
+                                 default=25,
+                                 types="int")
 
-    stack.parse.add_optional(key="mongodb_instance_type",
-                             types="str",
-                             default="t3.micro")
+        self.parse.add_optional(key="eks_node_instance_types",
+                                 default=["t3.medium","t3.large"],
+                                 types="list")
 
-    stack.parse.add_optional(key="mongodb_disksize",
-                             types="int",
-                             default="20")
+        self.parse.add_optional(key="eks_node_ami_type",
+                                 default="AL2_x86_64",
+                                 types="str")
 
-    stack.parse.add_optional(key="mongodb_volume_size",
-                             types="int",
-                             default=100)
+        # add substack
+        self.stack.add_substack("williaumwu:::network")
+        self.stack.add_substack("williaumwu:::rds_eks")
 
-    # add substack
-    stack.add_substack("config0-publish:::mongodb_replica_on_ec2")
-    stack.add_substack("config0-publish:::aws_eks")
+        self.stack.init_substacks()
 
-    # initialize
-    stack.init_variables()
-    stack.init_execgroups()
-    stack.init_substacks()
 
-    # we can do both db and eks in parallel
-    stack.set_parallel()
+    def _set_vars(self):
 
-    # configure db
-    mongodb_cluster = f'{stack.env_name}-mongodb'
+        self.stack.set_variable("eks_cluster",
+                                f'{self.stack.env_name}-eks')
 
-    arguments = {
-        "aws_default_region": stack.aws_default_region,
-        "mongodb_cluster": mongodb_cluster,
-        "mongodb_version": stack.mongodb_version,
-        "vpc_id": stack.vpc_id,
-        "subnet_ids": stack.public_subnet_ids,
-        "cloud_tags_hash": stack.cloud_tags_hash,
-        "num_of_replicas": stack.mongodb_num_of_replicas,
-        "ami": stack.mongodb_ami,
-        "ami_filter": stack.mongodb_ami_filter,
-        "ami_owner": stack.mongodb_ami_owner,
-        "bastion_sg_id": stack.bastion_sg_id,
-        "bastion_subnet_ids": stack.bastion_subnet_ids,
-        "bastion_ami": stack.bastion_ami,
-        "bastion_ami_filter": stack.bastion_ami_filter,
-        "bastion_ami_owner": stack.bastion_ami_owner,
-        "sg_id": stack.db_sg_id,
-        "instance_type": stack.mongodb_instance_type,
-        "disksize": stack.mongodb_disksize,
-        "volume_size": stack.mongodb_volume_size,
-        "publish_to_saas": True
-    }
+    def run_network(self):
 
-    if stack.get_attr("mongodb_username"):
-        arguments["mongodb_username"] = stack.mongodb_username
+        self.stack.init_variables()
+        self.stack.verify_variables()
+        self._set_vars()
 
-    if stack.get_attr("mongodb_password"):
-        arguments["mongodb_password"] = stack.mongodb_password
+        arguments = {
+            "env_name": self.stack.env_name,
+            "eks_cluster": self.stack.eks_cluster,
+            "aws_default_region": self.stack.aws_default_region,
+            "vpc_id": self.stack.vpc_id,
+            "public_subnet_ids": self.stack.public_subnet_ids,
+            "private_route_table_id": self.stack.private_route_table_id,
+            "nat_instance_types": self.stack.nat_instance_types,
+            "nat_cidr_ingress_accept": self.stack.nat_cidr_ingress_accept,
+            "vars_set_labels_hash": self.stack.vars_set_labels_hash,
+            "vars_set_arguments_hash": self.stack.vars_set_arguments_hash,
+            "cloud_tags_hash": self.stack.cloud_tags_hash
+            }
 
-    inputargs = {
-        "arguments": arguments,
-        "automation_phase": "infrastructure",
-        "human_description": f'create mongodb_cluster "{mongodb_cluster}"'
-    }
+        inputargs = {
+            "arguments": arguments,
+            "automation_phase": "infrastructure",
+            "human_description": "create network"
+        }
 
-    stack.mongodb_replica_on_ec2.insert(display=True,
-                                        **inputargs)
+        return self.stack.network.insert(display=True,
+                                         **inputargs)
 
-    # eks
-    eks_cluster = f'{stack.env_name}-eks'
+    def run_rds_eks(self):
 
-    arguments = {
-        "aws_default_region": stack.aws_default_region,
-        "vpc_id": stack.vpc_id,
-        "eks_cluster_version": stack.eks_cluster_version,
-        "eks_cluster_subnet_ids": stack.public_subnet_ids,
-        "eks_node_group_subnet_ids": stack.private_subnet_ids,
-        "eks_node_role_arn": stack.eks_node_role_arn,
-        "eks_node_max_capacity": stack.eks_node_max_capacity,
-        "eks_node_min_capacity": stack.eks_node_min_capacity,
-        "eks_node_desired_capacity": stack.eks_node_desired_capacity,
-        "eks_node_disksize": stack.eks_node_disksize,
-        "eks_node_instance_types": stack.eks_node_instance_types,
-        "eks_node_ami_type": stack.eks_node_ami_type,
-        "cloud_tags_hash": stack.cloud_tags_hash,
-        "eks_cluster": eks_cluster,
-    }
+        self.stack.init_variables()
+        self.stack.verify_variables()
+        self._set_vars()
 
-    if stack.eks_cluster_sg_id:
-        arguments["eks_cluster_sg_id"] = stack.eks_cluster_sg_id
+        arguments = {
+            "env_name": self.stack.env_name,
+            "eks_cluster": self.stack.eks_cluster,
+            "vpc_id": self.stack.vpc_id,
+            "public_subnet_ids": self.stack.public_subnet_ids,
+            "private_route_table_id": self.stack.private_route_table_id,
+            "db_sg_id": self.stack.db_sg_id,
+            "db_engine": self.stack.db_engine,
+            "db_engine_version": self.stack.db_engine_version,
+            "db_allocated_storage": self.stack.db_allocated_storage,
+            "db_instance_class": self.stack.db_instance_class,
+            "eks_cluster_sg_id": self.stack.eks_cluster_sg_id,
+            "eks_node_role_arn": self.stack.eks_node_role_arn,
+            "cloud_tags_hash": self.stack.cloud_tags_hash,
+        }
 
-    inputargs = {
-        "arguments": arguments,
-        "automation_phase": "infrastructure",
-        "human_description": f'create eks cluster "{eks_cluster}"'
-    }
+        if self.stack.db_master_username:
+            arguments["master_username"] = self.stack.db_master_username
 
-    stack.aws_eks.insert(display=True,
-                         **inputargs)
+        if self.stack.db_master_password:
+            arguments["master_password"] = self.stack.db_master_password
 
-    return stack.get_results()
+        if self.stack.eks_cluster_sg_id:
+            arguments["eks_cluster_sg_id"] = self.stack.eks_cluster_sg_id
+
+        inputargs = {
+            "arguments": arguments,
+            "automation_phase": "infrastructure",
+            "human_description": "create rds/eks"
+        }
+
+        return self.stack.rds_eks.insert(display=True,
+                                         **inputargs)
+
+    def run(self):
+
+        self.stack.unset_parallel(sched_init=True)
+        self.add_job("network")
+        self.add_job("rds_eks")
+
+        return self.finalize_jobs()
+
+    def schedule(self):
+
+        sched = self.new_schedule()
+        sched.job = "network"
+        sched.archive.timeout = 2700
+        sched.archive.timewait = 180
+        sched.conditions.retries = 1
+        sched.automation_phase = "infrastructure"
+        sched.human_description = "creates network"
+        sched.on_success = [ "rds_eks" ]
+        self.add_schedule()
+
+        sched = self.new_schedule()
+        sched.job = "rds_eks"
+        sched.archive.timeout = 2700
+        sched.archive.timewait = 180
+        sched.automation_phase = "infrastructure"
+        sched.human_description = 'create rds/eks'
+        self.add_schedule()
+
+        return self.get_schedules()

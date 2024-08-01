@@ -24,6 +24,10 @@ class Main(newSchedStack):
                                  types="str")
 
         # rds
+        self.parse.add_optional(key="rds_name",
+                                default="null",
+                                types="str")
+
         self.parse.add_required(key="db_sg_id",
                                  types="str")
 
@@ -60,6 +64,10 @@ class Main(newSchedStack):
                                  types="str")
 
         # eks
+        self.parse.add_optional(key="eks_cluster",
+                                default="null",
+                                types="str")
+
         self.parse.add_required(key="vpc_id",
                                  types="str")
 
@@ -108,12 +116,13 @@ class Main(newSchedStack):
 
     def _set_vars(self):
 
+        if not self.stack.get_attr("rds_name"):
+            self.stack.set_variable("rds_name",
+                                    f'{self.stack.env_name}-rds')
 
-        self.stack.set_variable("rds_name",
-                                f'{self.stack.env_name}-rds')
-
-        self.stack.set_variable("eks_cluster",
-                                f'{self.stack.env_name}-eks')
+        if not self.stack.get_attr("eks_cluster"):
+            self.stack.set_variable("eks_cluster",
+                                    f'{self.stack.env_name}-eks')
 
     def run_start(self):
 
