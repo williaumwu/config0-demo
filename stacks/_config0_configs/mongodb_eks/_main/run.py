@@ -134,7 +134,6 @@ def run(stackargs):
 
     # initialize
     stack.init_variables()
-    stack.init_execgroups()
     stack.init_substacks()
 
     # we can do both db and eks in parallel
@@ -177,7 +176,7 @@ def run(stackargs):
     inputargs = {
         "arguments": arguments,
         "automation_phase": "infrastructure",
-        "human_description": f'create mongodb_cluster "{mongodb_cluster}"'
+        "human_description": f'create mongodb_cluster "{stack.mongodb_cluster}"'
     }
 
     stack.mongodb_replica_on_ec2.insert(display=True,
@@ -211,7 +210,7 @@ def run(stackargs):
     inputargs = {
         "arguments": arguments,
         "automation_phase": "infrastructure",
-        "human_description": f'create eks cluster "{eks_cluster}"'
+        "human_description": f'create eks cluster "{stack.eks_cluster}"'
     }
 
     stack.aws_eks.insert(display=True,
