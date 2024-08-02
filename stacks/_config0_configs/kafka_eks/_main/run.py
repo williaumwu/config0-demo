@@ -186,7 +186,7 @@ class Main(newSchedStack):
         inputargs = {
             "arguments": arguments,
             "automation_phase": "infrastructure",
-            "human_description": f'create kafka_cluster "{kafka_cluster}"'
+            "human_description": f'create kafka_cluster "{self.stack.kafka_cluster}"'
         }
 
         return self.stack.kafka_on_ec2.insert(display=True,
@@ -231,8 +231,8 @@ class Main(newSchedStack):
         self._set_vars()
 
         self.stack.set_parallel()
-        self.stack._eks()
-        self.stack._kafka()
+        self._eks()
+        self._kafka()
 
     def run(self):
 
