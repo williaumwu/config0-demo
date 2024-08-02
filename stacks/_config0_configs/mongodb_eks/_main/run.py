@@ -141,9 +141,9 @@ def run(stackargs):
     stack.set_parallel()
 
     # configure db
-    if not stack.stack.get_attr("mongodb_cluster"):
+    if not stack.get_attr("mongodb_cluster"):
         stack.set_variable("mongodb_cluster",
-                           f'{stack.stack.env_name}-mongodb')
+                           f'{stack.env_name}-mongodb')
 
     arguments = {
         "aws_default_region": stack.aws_default_region,
@@ -184,7 +184,7 @@ def run(stackargs):
                                         **inputargs)
 
     # eks
-    if not stack.stack.get_attr("eks_cluster"):
+    if not stack.get_attr("eks_cluster"):
         stack.set_variable("eks_cluster",
                            f'{stack.env_name}-eks')
 
