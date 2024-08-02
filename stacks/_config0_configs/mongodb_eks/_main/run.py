@@ -186,7 +186,7 @@ def run(stackargs):
     # eks
     if not stack.stack.get_attr("eks_cluster"):
         stack.set_variable("eks_cluster",
-                           f'{stack.stack.env_name}-eks')
+                           f'{stack.env_name}-eks')
 
     arguments = {
         "aws_default_region": stack.aws_default_region,
