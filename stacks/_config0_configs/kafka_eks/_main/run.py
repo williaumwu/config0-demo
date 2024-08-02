@@ -172,7 +172,7 @@ class Main(newSchedStack):
             "bastion_ami_owner": self.stack.bastion_ami_owner,
             "sg_id": self.stack.db_sg_id,
             "instance_type": self.stack.kafka_instance_type,
-            "num_of_zookeeper": self.stack.num_of_zookeeper,
+            "num_of_zookeeper": self.stack.kafka_num_of_zookeeper,
             "num_of_broker": self.stack.kafka_num_of_broker,
             "num_of_schema_registry": self.stack.kafka_num_of_schema_registry,
             "num_of_connect": self.stack.kafka_num_of_connect,
