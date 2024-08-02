@@ -155,27 +155,7 @@ class Main(newSchedStack):
             self.stack.set_variable("eks_cluster",
                                     f'{self.stack.env_name}-eks')
 
-    def run_start(self):
-
-        self.stack.init_variables()
-        self.stack.verify_variables()
-
-        description="start job for schedule",
-
-        inputargs = {
-            "arguments": {"description":description},
-            "automation_phase": "infrastructure",
-            "human_description": 'start of sched jobs'
-        }
-
-        return self.stack.empty_stack.insert(display=True,
-                                             **inputargs)
-
-    def run_kafka(self):
-
-        self.stack.init_variables()
-        self.stack.verify_variables()
-        self._set_vars()
+    def _kafka(self):
 
         arguments = {
             "aws_default_region": self.stack.aws_default_region,
@@ -212,11 +192,7 @@ class Main(newSchedStack):
         return self.stack.kafka_on_ec2.insert(display=True,
                                               **inputargs)
 
-    def run_eks(self):
-
-        self.stack.init_variables()
-        self.stack.verify_variables()
-        self._set_vars()
+    def _eks(self):
 
         arguments = {
             "aws_default_region": self.stack.aws_default_region,
@@ -248,41 +224,32 @@ class Main(newSchedStack):
         return self.stack.aws_eks.insert(display=True,
                                          **inputargs)
 
+    def run_kafka_eks(self):
+
+        self.stack.init_variables()
+        self.stack.verify_variables()
+        self._set_vars()
+
+        self.stack.set_parallel()
+        self.stack._eks()
+        self.stack._kafka()
+
     def run(self):
 
         self.stack.unset_parallel(sched_init=True)
-        self.add_job("start")
-        self.add_job("kafka")
-        self.add_job("eks")
+        self.add_job("kafka_eks")
 
         return self.finalize_jobs()
 
     def schedule(self):
 
         sched = self.new_schedule()
-        sched.job = "start"
-        sched.archive.timeout = 600
-        sched.archive.timewait = 60
+        sched.job = "kafka_eks"
+        sched.archive.timeout = 2700
+        sched.archive.timewait = 120
         sched.conditions.retries = 1
         sched.automation_phase = "infrastructure"
-        sched.human_description = "starts schedule"
-        sched.on_success = [ "kafka", "eks" ]
-        self.add_schedule()
-
-        sched = self.new_schedule()
-        sched.job = "kafka"
-        sched.archive.timeout = 2700
-        sched.archive.timewait = 120
-        sched.automation_phase = "infrastructure"
-        sched.human_description = 'create kafka'
-        self.add_schedule()
-
-        sched = self.new_schedule()
-        sched.job = "eks"
-        sched.archive.timeout = 2700
-        sched.archive.timewait = 120
-        sched.automation_phase = "infrastructure"
-        sched.human_description = 'create eks cluster'
+        sched.human_description = 'create kafka/eks'
         self.add_schedule()
 
         return self.get_schedules()
