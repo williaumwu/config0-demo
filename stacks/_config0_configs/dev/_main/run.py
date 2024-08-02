@@ -174,6 +174,7 @@ class Main(newSchedStack):
             "eks_cluster": self.stack.eks_cluster,
             "vpc_id": self.stack.vpc_id,
             "public_subnet_ids": self.stack.public_subnet_ids,
+            "private_subnet_ids": self.stack.private_subnet_ids,
             "private_route_table_id": self.stack.private_route_table_id,
             "db_sg_id": self.stack.db_sg_id,
             "db_engine": self.stack.db_engine,
