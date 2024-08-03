@@ -17,3 +17,4 @@ This stack combines networking related stacks.
 | ------------------- | -------------------------------------------------- | -------- | --------- |
 | aws_default_region  | default aws region                                 |string    | eu-west-1 |
 | cloud_tags_hash     | the tags for the resources in the cloud as base64  |string    | None |
+
