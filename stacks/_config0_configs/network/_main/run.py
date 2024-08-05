@@ -4,6 +4,9 @@ class Main(newSchedStack):
 
         newSchedStack.__init__(self,stackargs)
 
+        self.parse.add_required(key="env_name",
+                                types="str")
+
         # nat instance vars
         self.parse.add_optional(key="vpc_id",
                                 default="null",
