@@ -4,40 +4,8 @@ class Main(newSchedStack):
 
         newSchedStack.__init__(self,stackargs)
 
-        self.parse.add_required(key="env_name",
-                                types="str")
-
-        self.parse.add_optional(key="cloud_tags_hash",
-                                types="str")
-
-        self.parse.add_optional(key="aws_default_region",
-                                default="eu-west-1",
-                                types="str")
-
-        # vpc 
-        self.parse.add_optional(key="eks_cluster",
-                                default="null",
-                                types="str")
-
-        # variable set
-        self.parse.add_optional(key="vars_set_labels_hash",
-                                default='null',
-                                types="str")
-
-        self.parse.add_optional(key="vars_set_arguments_hash",
-                                default='null',
-                                types="str")
-
         # nat instance vars
         self.parse.add_optional(key="vpc_id",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="public_subnet_ids",
-                                default="null",
-                                types="str")
-
-        self.parse.add_optional(key="private_route_table_id",
                                 default="null",
                                 types="str")
 
