@@ -157,9 +157,6 @@ def run(stackargs):
     stack.init_variables()
     stack.init_substacks()
 
-    # we can do both db and eks in parallel
-    stack.set_parallel()
-
     # configure network
     arguments = {
         "aws_default_region": stack.aws_default_region,
@@ -175,12 +172,11 @@ def run(stackargs):
     inputargs = {
         "arguments": arguments,
         "automation_phase": "infrastructure",
-        "human_description": f'create 3tier envronment {stack.eks_cluster}"'
+        "human_description": f'create 3tier env {stack.eks_cluster}"'
     }
 
     stack.network.insert(display=True,
                          **inputargs)
-
 
     # configure db & eks
     if not stack.get_attr("mongodb_cluster"):
