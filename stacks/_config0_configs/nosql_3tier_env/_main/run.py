@@ -26,11 +26,11 @@ def run(stackargs):
                              types="str")
 
     # variable set
-    stack.parse.add_optional(key="vars_set_labels_hash",
+    stack.parse.add_optional(key="netvars_set_labels_hash",
                              default='null',
                              types="str")
 
-    stack.parse.add_optional(key="vars_set_arguments_hash",
+    stack.parse.add_optional(key="netvars_set_arguments_hash",
                              default='null',
                              types="str")
 
@@ -160,8 +160,8 @@ def run(stackargs):
     # configure network
     arguments = {
         "aws_default_region": stack.aws_default_region,
-        "vars_set_labels_hash": stack.vars_set_labels_hash,
-        "vars_set_arguments_hash": stack.vars_set_arguments_hash,
+        "vars_set_labels_hash": stack.netvars_set_labels_hash,
+        "vars_set_arguments_hash": stack.netvars_set_arguments_hash,
         "vpc_id": stack.vpc_id,
         "public_subnet_ids": stack.public_subnet_ids,
         "private_route_table_id": stack.private_route_table_id
