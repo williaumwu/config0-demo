@@ -18,6 +18,10 @@ def run(stackargs):
                              default="null",
                              types="str")
 
+    stack.parse.add_optional(key="private_route_table_id",
+                             default="null",
+                             types="str")
+
     stack.parse.add_optional(key="private_subnet_ids",
                              default="null",
                              types="str")
