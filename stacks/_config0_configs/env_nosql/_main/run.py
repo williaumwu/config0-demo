@@ -193,6 +193,7 @@ def run(stackargs):
                            f'{stack.env_name}-eks')
 
     arguments = {
+        "env_name": stack.env_name,
         "aws_default_region": stack.aws_default_region,
         "mongodb_cluster": stack.mongodb_cluster,
         "mongodb_version": stack.mongodb_version,
