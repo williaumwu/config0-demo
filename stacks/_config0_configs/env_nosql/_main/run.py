@@ -42,7 +42,6 @@ def run(stackargs):
                              types="str",
                              default="0.0.0.0/0")
 
-
     # eks
     stack.parse.add_optional(key="eks_cluster",
                              default="null",
@@ -164,7 +163,7 @@ def run(stackargs):
         "vars_set_arguments_hash": stack.netvars_set_arguments_hash,
         "vpc_id": stack.vpc_id,
         "public_subnet_ids": stack.public_subnet_ids,
-        "private_route_table_id": stack.private_route_table_id
+        "private_route_table_id": stack.private_route_table_id,
         "nat_instance_types": stack.nat_instance_types,
         "nat_cidr_ingress_accept": stack.nat_cidr_ingress_accept
         }
