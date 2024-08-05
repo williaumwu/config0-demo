@@ -159,6 +159,8 @@ def run(stackargs):
 
     # configure network
     arguments = {
+        "env_name": stack.env_name,
+        "cloud_tags_hash": stack.cloud_tags_hash,
         "aws_default_region": stack.aws_default_region,
         "vars_set_labels_hash": stack.netvars_set_labels_hash,
         "vars_set_arguments_hash": stack.netvars_set_arguments_hash,
