@@ -159,7 +159,7 @@ class Main(newSchedStack):
         arguments = {
             "aws_default_region": self.stack.aws_default_region,
             "kafka_cluster": self.stack.kafka_cluster,
-            "subnet_ids": self.stack.private_subnet_ids,
+            "subnet_ids": self.stack.public_subnet_ids,
             "cloud_tags_hash": self.stack.cloud_tags_hash,
             "ami": self.stack.kafka_ami,
             "ami_filter": self.stack.kafka_ami_filter,

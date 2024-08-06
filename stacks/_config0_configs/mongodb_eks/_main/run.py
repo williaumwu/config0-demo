@@ -149,7 +149,7 @@ def run(stackargs):
         "mongodb_cluster": stack.mongodb_cluster,
         "mongodb_version": stack.mongodb_version,
         "vpc_id": stack.vpc_id,
-        "subnet_ids": stack.private_subnet_ids,
+        "subnet_ids": stack.public_subnet_ids,
         "cloud_tags_hash": stack.cloud_tags_hash,
         "num_of_replicas": stack.mongodb_num_of_replicas,
         "ami": stack.mongodb_ami,
