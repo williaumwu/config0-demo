@@ -84,7 +84,7 @@ def run(stackargs):
 
     stack.parse.add_required(key="mongodb_num_of_replicas",
                              types="int",
-                             default="1")
+                             default="3")
 
     stack.parse.add_optional(key="mongodb_ami",
                              types="str",
