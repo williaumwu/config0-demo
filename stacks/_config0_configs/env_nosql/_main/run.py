@@ -156,6 +156,7 @@ def run(stackargs):
     # initialize
     stack.init_variables()
     stack.init_substacks()
+    stack.unset_parallel()
 
     # configure network
     arguments = {
@@ -179,6 +180,17 @@ def run(stackargs):
 
     stack.network.insert(display=True,
                          **inputargs)
+
+    ############################################################
+    # testtest456
+    ############################################################
+    human_description = "sleeping {}".format(str(1800))
+    stack.add_external_cmd(cmd="sleep {0}".format(str(1800)),
+                           order_type="sleep::shellout",
+                           human_description=human_description,
+                           display=True,
+                           role="external/cli/execute")
+    ############################################################
 
     # configure db & eks
     if not stack.get_attr("mongodb_cluster"):
