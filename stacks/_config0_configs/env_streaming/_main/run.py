@@ -210,7 +210,7 @@ def run(stackargs):
         "bastion_ami": stack.bastion_ami,
         "bastion_ami_filter": stack.bastion_ami_filter,
         "bastion_ami_owner": stack.bastion_ami_owner,
-        "sg_id": stack.db_sg_id,
+        "db_sg_id": stack.db_sg_id,
         "kafka_instance_type": stack.kafka_instance_type,
         "kafka_num_of_zookeeper": stack.kafka_num_of_zookeeper,
         "kafka_num_of_broker": stack.kafka_num_of_broker,
