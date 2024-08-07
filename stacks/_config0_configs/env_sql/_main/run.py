@@ -167,6 +167,7 @@ def run(stackargs):
 
     arguments = {
         "aws_default_region": stack.aws_default_region,
+        "vpc_id": stack.vpc_id,
         "env_name": stack.env_name,
         "cloud_tags_hash": stack.cloud_tags_hash,
         "db_sg_id": stack.db_sg_id,

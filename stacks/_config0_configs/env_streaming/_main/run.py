@@ -201,6 +201,7 @@ def run(stackargs):
     arguments = {
         "aws_default_region": stack.aws_default_region,
         "env_name": stack.env_name,
+        "vpc_id": stack.vpc_id,
         "kafka_cluster": stack.kafka_cluster,
         "cloud_tags_hash": stack.cloud_tags_hash,
         "ami": stack.kafka_ami,
