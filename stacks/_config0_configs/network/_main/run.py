@@ -171,23 +171,24 @@ class Main(newSchedStack):
     def schedule(self):
 
         sched = self.new_schedule()
-        sched.job = "vpc"
-        sched.archive.timeout = 1800
-        sched.archive.timewait = 120
-        sched.automation_phase = "infrastructure"
-        sched.human_description = "Creates vpc"
-        sched.conditions.retries = 1
-        sched.on_success = ["network_vars_set"]
-        self.add_schedule()
-
-        sched = self.new_schedule()
         sched.job = "network_vars_set"
         sched.archive.timeout = 900
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
+        sched.conditions.retries = 1
+        sched.on_success = ["vpc"]
+        self.add_schedule()
+
+        sched = self.new_schedule()
+        sched.job = "vpc"
+        sched.archive.timeout = 1800
+        sched.archive.timewait = 120
+        sched.automation_phase = "infrastructure"
+        sched.human_description = "Creates vpc"
         sched.on_success = ["nat_instance"]
         self.add_schedule()
+
 
         sched = self.new_schedule()
         sched.job = "nat_instance"
