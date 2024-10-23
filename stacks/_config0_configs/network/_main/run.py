@@ -172,7 +172,7 @@ class Main(newSchedStack):
 
         sched = self.new_schedule()
         sched.job = "network_vars_set"
-        sched.archive.timeout = 900
+        sched.archive.timeout = 300
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates variable set"
@@ -182,7 +182,7 @@ class Main(newSchedStack):
 
         sched = self.new_schedule()
         sched.job = "vpc"
-        sched.archive.timeout = 1800
+        sched.archive.timeout = 1200
         sched.archive.timewait = 120
         sched.automation_phase = "infrastructure"
         sched.human_description = "Creates vpc"
