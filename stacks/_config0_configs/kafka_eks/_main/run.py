@@ -139,7 +139,7 @@ class Main(newSchedStack):
 
         # add substack
         self.stack.add_substack("config0-publish:::empty_stack")
-        self.stack.add_substack("suekong1984:::kafka")
+        self.stack.add_substack("williaumwu:::kafka")
         self.stack.add_substack("config0-publish:::aws_eks")
 
         self.stack.init_substacks()
